@@ -219,6 +219,7 @@
     .srv-card{
       position:relative;padding:36px 32px;background:var(--dark2);
       transition:background .25s;cursor:default;overflow:hidden;
+      isolation:isolate;
     }
     .srv-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,217,255,.06),transparent);opacity:0;transition:opacity .3s}
     .srv-card:hover{background:var(--dark3)}
@@ -232,6 +233,7 @@
     }
     .srv-card:hover::after{transform:scaleX(1)}
     .srv-icon{
+      position:relative;z-index:1;
       width:52px;height:52px;border-radius:14px;margin-bottom:20px;
       background:rgba(0,217,255,.08);border:1px solid rgba(0,217,255,.15);
       display:flex;align-items:center;justify-content:center;
@@ -239,9 +241,9 @@
     }
     .srv-card:hover .srv-icon{background:rgba(0,217,255,.15);box-shadow:0 0 20px rgba(0,217,255,.2)}
     .srv-icon svg{color:var(--cyan)}
-    .srv-title{font-family:var(--font-head);font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:10px;letter-spacing:-.02em}
-    .srv-desc{font-size:.93rem;color:var(--gray);line-height:1.75}
-    .srv-badge{display:inline-flex;margin-top:16px;font-family:var(--font-mono);font-size:.72rem;color:var(--cyan2);background:rgba(6,182,212,.08);padding:4px 10px;border-radius:6px;border:1px solid rgba(6,182,212,.15)}
+    .srv-title{position:relative;z-index:1;font-family:var(--font-head);font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:10px;letter-spacing:-.02em}
+    .srv-desc{position:relative;z-index:1;font-size:.93rem;color:var(--gray);line-height:1.75}
+    .srv-badge{position:relative;z-index:1;display:inline-flex;margin-top:16px;font-family:var(--font-mono);font-size:.72rem;color:var(--cyan2);background:rgba(6,182,212,.08);padding:4px 10px;border-radius:6px;border:1px solid rgba(6,182,212,.15)}
 
     /* ══════════════ FLOWS (PULSE BEAMS) ══════════════ */
     #flujos{background:var(--black);overflow:hidden}
@@ -621,9 +623,108 @@
       .stat{border-right:none;padding:0 0 20px;border-bottom:1px solid rgba(255,255,255,.07)}
       .stat:last-child{border-bottom:none;padding-left:0}
     }
+
+    /* ══════════════ SCROLL PROGRESS ══════════════ */
+    #scroll-bar{
+      position:fixed;top:0;left:0;z-index:300;
+      height:2px;width:0%;pointer-events:none;
+      background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));
+      transition:width .08s linear;
+    }
+
+    /* ══════════════ AURORA HERO BLOBS ══════════════ */
+    .aurora-hero{
+      position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;
+    }
+    .a-blob{
+      position:absolute;border-radius:50%;pointer-events:none;
+      animation:blob-drift linear infinite;will-change:transform;
+    }
+    .a-blob:nth-child(1){
+      width:55vw;height:55vw;max-width:700px;max-height:700px;
+      background:radial-gradient(circle,rgba(0,217,255,.22) 0%,transparent 68%);
+      top:-18%;left:-12%;filter:blur(72px);
+      animation-duration:32s;animation-delay:0s;
+    }
+    .a-blob:nth-child(2){
+      width:48vw;height:48vw;max-width:620px;max-height:620px;
+      background:radial-gradient(circle,rgba(168,85,247,.2) 0%,transparent 68%);
+      top:20%;right:-8%;filter:blur(90px);
+      animation-duration:40s;animation-delay:-12s;
+    }
+    .a-blob:nth-child(3){
+      width:40vw;height:40vw;max-width:520px;max-height:520px;
+      background:radial-gradient(circle,rgba(14,165,233,.18) 0%,transparent 68%);
+      bottom:-12%;left:35%;filter:blur(80px);
+      animation-duration:36s;animation-delay:-22s;
+    }
+    @keyframes blob-drift{
+      0%  {transform:translate(0,0) scale(1)}
+      20% {transform:translate(30px,-40px) scale(1.06)}
+      45% {transform:translate(-25px,55px) scale(.94)}
+      70% {transform:translate(50px,20px) scale(1.04)}
+      100%{transform:translate(0,0) scale(1)}
+    }
+    @media(prefers-reduced-motion:reduce){.a-blob{animation:none}}
+
+    /* ══════════════ GRAIN OVERLAY ══════════════ */
+    #grain-canvas{
+      position:fixed;inset:0;z-index:9998;
+      width:100vw;height:100vh;
+      pointer-events:none;opacity:.028;
+    }
+
+    /* ══════════════ HERO SPOTLIGHT ══════════════ */
+    .hero-spotlight{
+      position:absolute;inset:0;z-index:2;pointer-events:none;
+      background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(0,217,255,.15) 0%,transparent 60%);
+    }
+
+    /* ══════════════ MARQUEE STRIP ══════════════ */
+    .marquee-strip{
+      position:relative;z-index:2;overflow:hidden;
+      padding:14px 0;
+      background:rgba(3,7,18,.7);
+      border-top:1px solid rgba(0,217,255,.1);
+      border-bottom:1px solid rgba(0,217,255,.08);
+      backdrop-filter:blur(8px);
+    }
+    .marquee-track{
+      display:flex;width:max-content;gap:0;
+      animation:marquee-run 28s linear infinite;
+    }
+    .marquee-track:hover{animation-play-state:paused}
+    .marquee-item{
+      display:inline-flex;align-items:center;gap:9px;padding:0 36px;
+      font-family:var(--font-mono);font-size:.74rem;letter-spacing:.07em;
+      color:rgba(148,163,184,.55);white-space:nowrap;
+    }
+    .marquee-item svg{color:rgba(0,217,255,.45);flex-shrink:0}
+    .marquee-dot{width:4px;height:4px;border-radius:50%;background:rgba(0,217,255,.25);flex-shrink:0}
+    @keyframes marquee-run{
+      0%  {transform:translateX(0)}
+      100%{transform:translateX(-50%)}
+    }
+    @media(prefers-reduced-motion:reduce){.marquee-track{animation:none;overflow-x:auto}}
+
+    /* ══════════════ ANIMATED CARD BORDERS ══════════════ */
+    @property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+    .srv-card-glow{
+      position:absolute;inset:-1px;border-radius:inherit;z-index:0;
+      background:conic-gradient(from var(--angle),transparent 70%,rgba(0,217,255,.5) 80%,rgba(168,85,247,.5) 90%,transparent 100%);
+      opacity:0;transition:opacity .35s;
+      animation:spin-angle 4s linear infinite;
+    }
+    @keyframes spin-angle{to{--angle:360deg}}
+    .srv-card:hover .srv-card-glow{opacity:1}
+    @media(prefers-reduced-motion:reduce){.srv-card-glow{animation:none}}
   </style>
 </head>
 <body>
+
+<!-- ════════ AMBIENT OVERLAYS ════════ -->
+<div id="scroll-bar" aria-hidden="true" role="presentation"></div>
+<canvas id="grain-canvas" aria-hidden="true"></canvas>
 
 <!-- ════════ NAVBAR ════════ -->
 <nav class="nav" id="navbar" role="navigation" aria-label="Navegación principal">
@@ -669,6 +770,13 @@
 <section id="hero" aria-label="Inicio">
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
   <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <!-- Aurora ambient blobs -->
+  <div class="aurora-hero" aria-hidden="true">
+    <div class="a-blob"></div>
+    <div class="a-blob"></div>
+    <div class="a-blob"></div>
+  </div>
+  <div class="hero-spotlight" aria-hidden="true"></div>
   <div class="hero-grid-overlay" aria-hidden="true"></div>
   <div class="hero-vignette" aria-hidden="true"></div>
   <div class="hero-interact-hint" aria-hidden="true">
@@ -735,6 +843,54 @@
   </div>
 </section>
 
+<!-- ════════ MARQUEE STRIP ════════ -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track">
+    <!-- First set -->
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8v4h8V3z"/></svg>n8n</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><circle cx="12" cy="18" r="3"/></svg>OpenAI GPT-4o</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Python · FastAPI</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Make · Zapier</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>React · Node.js</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Agentes RAG</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Assessment 360°</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Supabase · AWS</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Workshops IA</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>Transformación Digital</span>
+    <span class="marquee-dot"></span>
+    <!-- Duplicate set for seamless loop -->
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8v4h8V3z"/></svg>n8n</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><circle cx="12" cy="18" r="3"/></svg>OpenAI GPT-4o</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Python · FastAPI</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Make · Zapier</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>React · Node.js</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Agentes RAG</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Assessment 360°</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Supabase · AWS</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Workshops IA</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>Transformación Digital</span>
+    <span class="marquee-dot"></span>
+  </div>
+</div>
+
 <!-- ════════ SERVICES ════════ -->
 <section id="servicios" class="section" aria-labelledby="srv-title">
   <div class="container">
@@ -748,6 +904,7 @@
 
       <!-- 1 -->
       <article class="srv-card reveal d1">
+        <div class="srv-card-glow" aria-hidden="true"></div>
         <div class="srv-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8v4h8V3z"/><path d="M12 12v3m-2-1.5h4"/></svg></div>
         <h3 class="srv-title">Automatización de Procesos</h3>
         <p class="srv-desc">Flujos de trabajo inteligentes que eliminan tareas repetitivas, reducen errores humanos y liberan a tu equipo para trabajar en lo que realmente importa.</p>
@@ -756,6 +913,7 @@
 
       <!-- 2 -->
       <article class="srv-card reveal d2">
+        <div class="srv-card-glow" aria-hidden="true"></div>
         <div class="srv-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><circle cx="12" cy="18" r="3"/><path d="M12 12v3m-3.5-1.76l2.5 1.44M15.5 13.24l-2.5 1.44"/></svg></div>
         <h3 class="srv-title">Adopción de Inteligencia Artificial</h3>
         <p class="srv-desc">Identificamos dónde la IA genera más valor en tu empresa y acompañamos la implementación: desde la estrategia hasta los agentes en producción.</p>
@@ -764,6 +922,7 @@
 
       <!-- 3 -->
       <article class="srv-card reveal d3">
+        <div class="srv-card-glow" aria-hidden="true"></div>
         <div class="srv-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
         <h3 class="srv-title">Desarrollo de Software a Medida</h3>
         <p class="srv-desc">Aplicaciones web, APIs, dashboards e integraciones construidas con tecnologías modernas y escalables, ajustadas a tu lógica de negocio.</p>
@@ -772,6 +931,7 @@
 
       <!-- 4 -->
       <article class="srv-card reveal d4">
+        <div class="srv-card-glow" aria-hidden="true"></div>
         <div class="srv-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
         <h3 class="srv-title">Assessment Tecnológico</h3>
         <p class="srv-desc">Evaluamos tu madurez digital, identificamos brechas críticas y entregamos una hoja de ruta priorizada para tu transformación tecnológica.</p>
@@ -780,6 +940,7 @@
 
       <!-- 5 -->
       <article class="srv-card reveal d5">
+        <div class="srv-card-glow" aria-hidden="true"></div>
         <div class="srv-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
         <h3 class="srv-title">Capacitaciones y Talleres</h3>
         <p class="srv-desc">Programas prácticos para equipos y personas: domina las herramientas de automatización e IA más demandadas del mercado laboral actual.</p>
@@ -1875,6 +2036,99 @@ cf.addEventListener('submit',e=>{
 
   greet();
 
+})();
+
+/* ══════════════════════════════════════
+   10. FILM GRAIN NOISE CANVAS
+══════════════════════════════════════ */
+(function(){
+  const c = document.getElementById('grain-canvas');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  let animId, frame = 0;
+
+  function resize(){
+    c.width  = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+
+  function drawGrain(){
+    const w = c.width, h = c.height;
+    if(!w || !h) return;
+    const img  = ctx.createImageData(w, h);
+    const data = img.data;
+    for(let i = 0; i < data.length; i += 4){
+      const v = (Math.random() * 255) | 0;
+      data[i]   = v;
+      data[i+1] = v;
+      data[i+2] = v;
+      data[i+3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function loop(){
+    frame++;
+    if(frame % 2 === 0) drawGrain();   // refresh every 2 frames for animated grain
+    animId = requestAnimationFrame(loop);
+  }
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  // only run grain when page is visible
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){ cancelAnimationFrame(animId); }
+    else { frame = 0; loop(); }
+  });
+
+  loop();
+})();
+
+/* ══════════════════════════════════════
+   11. SCROLL PROGRESS BAR
+══════════════════════════════════════ */
+(function(){
+  const bar = document.getElementById('scroll-bar');
+  if(!bar) return;
+  function update(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.min(window.scrollY / max * 100, 100) : 0;
+    bar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+/* ══════════════════════════════════════
+   12. HERO TEXT SCRAMBLE ON LOAD
+══════════════════════════════════════ */
+(function(){
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+  function scramble(el){
+    const original = el.textContent;
+    const len = original.length;
+    let iter = 0;
+    const interval = setInterval(() => {
+      el.textContent = original
+        .split('')
+        .map((ch, i) => {
+          if(i < iter) return original[i];
+          if(ch === ' ') return ' ';
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        })
+        .join('');
+      iter += 0.4;
+      if(iter >= len) clearInterval(interval);
+    }, 30);
+  }
+
+  // target the gradient text span in hero title
+  const target = document.querySelector('.hero-title .g');
+  if(target){
+    // slight delay so page finishes painting
+    setTimeout(() => scramble(target), 600);
+  }
 })();
 </script>
 </body>
